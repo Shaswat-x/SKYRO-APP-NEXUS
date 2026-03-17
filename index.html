@@ -2,86 +2,53 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SKYRO OS ULTRA</title>
+<title>SKYRO OS</title>
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI;}
+
 body{
- margin:0;
- font-family:Segoe UI;
- background:black;
- color:cyan;
+ background: radial-gradient(circle at 20% 20%, #0a0f1f, #000);
+ color:#00f0ff;
  overflow:hidden;
 }
 
-/* BOOT */
-#boot{
- position:fixed;
- width:100%;
- height:100%;
- background:black;
- display:flex;
- justify-content:center;
- align-items:center;
- flex-direction:column;
- z-index:99999;
- animation:fadeOut 3s forwards;
- animation-delay:2s;
-}
-@keyframes fadeOut{to{opacity:0;visibility:hidden;}}
-
-/* LOGIN */
-#loginScreen{
- position:fixed;
- width:100%;
- height:100%;
- background:black;
- display:flex;
- flex-direction:column;
- justify-content:center;
- align-items:center;
- z-index:9999;
-}
-
-/* CANVAS */
-#bgCanvas{
- position:fixed;
- width:100%;
- height:100%;
- z-index:-2;
-}
-
-/* ENERGY GRID */
-#energyLines::before{
+/* ANIMATED GRADIENT LAYER */
+body::before{
  content:"";
  position:fixed;
- width:100%;
- height:100%;
- background:repeating-linear-gradient(
-  0deg,
-  transparent,
-  transparent 40px,
-  rgba(0,255,255,0.05) 41px
- );
- pointer-events:none;
- z-index:-1;
+ width:200%;
+ height:200%;
+ background: radial-gradient(circle, rgba(0,255,255,0.1), transparent 60%);
+ animation:moveBG 20s infinite alternate;
+}
+@keyframes moveBG{
+ 0%{transform:translate(0,0);}
+ 100%{transform:translate(-25%, -25%);}
 }
 
 /* HEADER */
-.header{text-align:center;margin-top:10px;}
+.header{
+ text-align:center;
+ padding:15px;
+ letter-spacing:2px;
+ opacity:0.9;
+}
 
-/* CARDS */
+/* GRID */
 .container{
  display:grid;
  grid-template-columns:repeat(2,1fr);
- gap:15px;
- padding:15px;
+ gap:20px;
+ padding:20px;
 }
 
+/* CARD */
 .card{
- height:140px;
- border-radius:18px;
- backdrop-filter: blur(20px);
- background: rgba(0,0,0,0.5);
+ height:150px;
+ border-radius:20px;
+ background:rgba(255,255,255,0.05);
+ backdrop-filter:blur(20px);
  border:1px solid rgba(255,255,255,0.1);
  display:flex;
  flex-direction:column;
@@ -89,85 +56,109 @@ body{
  align-items:center;
  gap:10px;
  cursor:pointer;
- transition:0.3s;
+ transition:0.4s cubic-bezier(.2,.8,.2,1);
+ position:relative;
+ overflow:hidden;
 }
 
-.card img{width:50px;height:50px;}
+/* CARD GLOW */
+.card::before{
+ content:"";
+ position:absolute;
+ width:200%;
+ height:200%;
+ background: radial-gradient(circle, rgba(0,255,255,0.2), transparent 60%);
+ opacity:0;
+ transition:0.4s;
+}
+
+.card:hover::before{
+ opacity:1;
+ transform:translate(-25%, -25%);
+}
 
 .card:hover{
- transform:translateY(-5px) scale(1.05);
- box-shadow:0 10px 40px rgba(0,255,255,0.6);
+ transform:translateY(-10px) scale(1.05);
+ box-shadow:0 20px 60px rgba(0,255,255,0.4);
+}
+
+/* ICON */
+.card img{
+ width:60px;
+ filter: drop-shadow(0 0 10px cyan);
 }
 
 /* WINDOW */
 .window{
  position:absolute;
+ top:80px;
+ left:5%;
  width:90%;
  height:70%;
- top:60px;
- left:5%;
- backdrop-filter:blur(20px);
  background:rgba(0,0,0,0.6);
- border:1px solid rgba(0,255,255,0.4);
- border-radius:14px;
+ backdrop-filter:blur(25px);
+ border-radius:20px;
+ border:1px solid rgba(0,255,255,0.3);
  display:flex;
  flex-direction:column;
- animation:openApp 0.3s ease;
+ animation:openWin 0.3s ease;
 }
-@keyframes openApp{
- from{transform:scale(0.7);opacity:0;}
+@keyframes openWin{
+ from{transform:scale(0.8);opacity:0;}
  to{transform:scale(1);opacity:1;}
 }
 
 .title-bar{
- background:cyan;
- color:black;
- padding:5px;
  display:flex;
  justify-content:space-between;
+ padding:10px;
+ background:rgba(0,255,255,0.2);
+ border-radius:20px 20px 0 0;
  cursor:move;
 }
 
 /* DOCK */
 #dock{
  position:fixed;
- bottom:10px;
+ bottom:15px;
  left:50%;
  transform:translateX(-50%);
  display:flex;
- gap:10px;
- background:rgba(0,0,0,0.5);
- padding:10px;
- border-radius:20px;
- backdrop-filter:blur(10px);
+ gap:15px;
+ background:rgba(255,255,255,0.05);
+ padding:12px 20px;
+ border-radius:25px;
+ backdrop-filter:blur(20px);
 }
 
 .dock-item{
- width:50px;height:50px;
- background:cyan;
- border-radius:10px;
+ width:55px;height:55px;
+ border-radius:15px;
+ background:rgba(255,255,255,0.1);
  display:flex;
- justify-content:center;
  align-items:center;
+ justify-content:center;
  cursor:pointer;
  transition:0.3s;
 }
+
 .dock-item:hover{
  transform:scale(1.3);
- box-shadow:0 0 20px cyan;
+ box-shadow:0 0 25px cyan;
 }
 
 /* MIC */
-#micBtn{
+#mic{
  position:fixed;
  right:20px;
- bottom:90px;
- width:60px;
- height:60px;
+ bottom:100px;
+ width:65px;height:65px;
  border-radius:50%;
- background:black;
+ background:rgba(0,0,0,0.6);
  border:2px solid cyan;
- color:cyan;
+ display:flex;
+ align-items:center;
+ justify-content:center;
  cursor:pointer;
  animation:pulse 2s infinite;
 }
@@ -177,60 +168,77 @@ body{
  100%{box-shadow:0 0 10px cyan;}
 }
 
-/* GLOW */
+/* GLOW CURSOR */
 #glow{
  position:fixed;
  width:250px;height:250px;
- background:radial-gradient(circle, rgba(0,255,255,0.2), transparent);
+ background:radial-gradient(circle, rgba(0,255,255,0.25), transparent);
  pointer-events:none;
+}
+
+/* LOGIN */
+#login{
+ position:fixed;
+ width:100%;
+ height:100%;
+ background:black;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ align-items:center;
+ z-index:999;
+}
+input{
+ padding:10px;
+ border:none;
+ border-radius:10px;
+ margin:10px;
+}
+button{
+ padding:10px 20px;
+ border:none;
+ border-radius:10px;
+ background:cyan;
+ cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div id="boot"><h1>SKYRO OS</h1><p>Initializing...</p></div>
-
-<div id="loginScreen">
-<h2>Login</h2>
-<input id="username" placeholder="Enter Username">
-<button onclick="login()">Enter</button>
+<div id="login">
+<h2>Welcome to SKYRO</h2>
+<input id="user" placeholder="Enter Name">
+<button onclick="enter()">Enter</button>
 </div>
 
-<canvas id="bgCanvas"></canvas>
-<div id="energyLines"></div>
 <div id="glow"></div>
 
 <div class="header">
-<h2>SKYRO</h2>
-<p>Appnexus Interface</p>
+<h2>SKYRO OS</h2>
+<p>Futuristic Control Interface</p>
 </div>
 
 <div class="container">
 
-<div class="card" onclick="openExternal('https://flipkart.com','Flipkart')">
+<div class="card" onclick="openApp('Flipkart','https://flipkart.com')">
 <img src="https://img.icons8.com/color/96/flipkart.png">
 <span>Flipkart</span>
 </div>
 
-<div class="card" onclick="openExternal('https://maps.google.com','Maps')">
+<div class="card" onclick="openApp('Maps','https://maps.google.com')">
 <img src="https://img.icons8.com/color/96/google-maps.png">
 <span>Maps</span>
 </div>
 
-<div class="card" onclick="openExternal('https://instagram.com','Instagram')">
+<div class="card" onclick="openApp('Instagram','https://instagram.com')">
 <img src="https://img.icons8.com/color/96/instagram-new.png">
 <span>Instagram</span>
 </div>
 
-<div class="card" onclick="openExternal('https://aws.amazon.com','AWS')">
+<div class="card" onclick="openApp('AWS','https://aws.amazon.com')">
 <img src="https://img.icons8.com/color/96/amazon-web-services.png">
 <span>AWS</span>
-</div>
-
-<div class="card" onclick="openExternal('https://bgmi.in','BGMI')">
-<img src="https://img.icons8.com/color/96/controller.png">
-<span>BGMI</span>
 </div>
 
 <div class="card" onclick="openNotes()">
@@ -238,169 +246,96 @@ body{
 <span>Notes</span>
 </div>
 
-<div class="card" onclick="openExternal('https://cricbuzz.com','Cricbuzz')">
-<img src="https://img.icons8.com/color/96/cricket.png">
-<span>Cricbuzz</span>
+<div class="card" onclick="openApp('BGMI','https://bgmi.in')">
+<img src="https://img.icons8.com/color/96/controller.png">
+<span>BGMI</span>
 </div>
 
 </div>
 
 <div id="dock">
 <div class="dock-item" onclick="openNotes()">📝</div>
-<div class="dock-item" onclick="lockSystem()">🔒</div>
+<div class="dock-item" onclick="lock()">🔒</div>
 <div class="dock-item" onclick="location.reload()">🔄</div>
 </div>
 
-<button id="micBtn">🎤</button>
-
-<div id="windows"></div>
+<div id="mic">🎤</div>
 
 <script>
-let appCount=0;
-
-/* SOUND */
-function playClick(){
- let ctx=new AudioContext();
- let osc=ctx.createOscillator();
- let gain=ctx.createGain();
- osc.connect(gain);
- gain.connect(ctx.destination);
- osc.frequency.value=500;
- gain.gain.value=0.1;
- osc.start();
- osc.stop(ctx.currentTime+0.05);
+/* LOGIN */
+function enter(){
+ if(!user.value) return alert("Enter name");
+ login.style.display="none";
+ speak("Welcome "+user.value);
 }
 
 /* VOICE */
 function speak(t){
- let msg=new SpeechSynthesisUtterance(t);
- msg.pitch=1.2;
- speechSynthesis.speak(msg);
+ let s=new SpeechSynthesisUtterance(t);
+ s.pitch=1.2;
+ speechSynthesis.speak(s);
 }
 
-/* LOGIN */
-function login(){
- let u=username.value;
- if(!u) return alert("Enter username");
- localStorage.setItem("user",u);
- loginScreen.style.display="none";
- speak("Welcome "+u);
-}
-
-/* LOCK */
-function lockSystem(){
- loginScreen.style.display="flex";
-}
-
-/* EXTERNAL */
-function openExternal(url,name){
- playClick();
+/* OPEN */
+function openApp(name,url){
  speak("Opening "+name);
  window.open(url,"_blank");
 }
 
 /* NOTES */
 function openNotes(){
- let win=document.createElement("div");
- let id="app"+(++appCount);
-
- win.className="window";
- win.id=id;
-
- win.innerHTML=`
+ let w=document.createElement("div");
+ w.className="window";
+ w.innerHTML=`
  <div class="title-bar">
   <span>Notes</span>
-  <span onclick="closeApp('${id}')">X</span>
+  <span onclick="this.parentElement.parentElement.remove()">X</span>
  </div>
- <textarea id="notesArea" style="flex:1;background:black;color:cyan;"></textarea>
- <button onclick="saveNotes()">Save</button>
+ <textarea style="flex:1;background:black;color:cyan;"></textarea>
  `;
-
- document.body.appendChild(win);
- drag(win);
- setTimeout(loadNotes,100);
-}
-
-function saveNotes(){
- localStorage.setItem("notes",notesArea.value);
- speak("Saved");
-}
-function loadNotes(){
- let d=localStorage.getItem("notes");
- if(d) notesArea.value=d;
+ document.body.appendChild(w);
+ drag(w);
 }
 
 /* DRAG */
 function drag(el){
- let pos1=0,pos2=0,pos3=0,pos4=0;
+ let x=0,y=0,px=0,py=0;
  el.querySelector(".title-bar").onmousedown=e=>{
-  pos3=e.clientX;pos4=e.clientY;
-  document.onmousemove=dragMove;
+  px=e.clientX;py=e.clientY;
+  document.onmousemove=e=>{
+   x=px-e.clientX;
+   y=py-e.clientY;
+   px=e.clientX;py=e.clientY;
+   el.style.top=(el.offsetTop-y)+"px";
+   el.style.left=(el.offsetLeft-x)+"px";
+  }
   document.onmouseup=()=>document.onmousemove=null;
  };
- function dragMove(e){
-  pos1=pos3-e.clientX;
-  pos2=pos4-e.clientY;
-  pos3=e.clientX;
-  pos4=e.clientY;
-  el.style.top=(el.offsetTop-pos2)+"px";
-  el.style.left=(el.offsetLeft-pos1)+"px";
- }
 }
 
-/* BG PARTICLES */
-let canvas=document.getElementById("bgCanvas");
-let ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
+/* LOCK */
+function lock(){login.style.display="flex";}
 
-let p=[];
-for(let i=0;i<150;i++){
- p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2,sx:(Math.random()-0.5),sy:(Math.random()-0.5)});
-}
-
-function animate(){
- ctx.fillStyle="rgba(0,0,0,0.3)";
- ctx.fillRect(0,0,canvas.width,canvas.height);
-
- p.forEach(pt=>{
-  ctx.beginPath();
-  ctx.arc(pt.x,pt.y,pt.size,0,Math.PI*2);
-  ctx.fillStyle="cyan";
-  ctx.fill();
-
-  pt.x+=pt.sx;
-  pt.y+=pt.sy;
-
-  if(pt.x<0||pt.x>canvas.width) pt.sx*=-1;
-  if(pt.y<0||pt.y>canvas.height) pt.sy*=-1;
- });
-
- requestAnimationFrame(animate);
-}
-animate();
-
-/* GLOW */
+/* CURSOR GLOW */
 document.addEventListener("mousemove",e=>{
  glow.style.left=e.clientX+"px";
  glow.style.top=e.clientY+"px";
 });
 
-/* VOICE */
+/* VOICE COMMAND */
 let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(SR){
  let rec=new SR();
- micBtn.onclick=()=>{speak("Listening");rec.start();};
+ mic.onclick=()=>{speak("Listening");rec.start();}
  rec.onresult=e=>{
   let c=e.results[0][0].transcript.toLowerCase();
-  if(c.includes("flipkart")) openExternal("https://flipkart.com","Flipkart");
-  else if(c.includes("maps")) openExternal("https://maps.google.com","Maps");
-  else if(c.includes("instagram")) openExternal("https://instagram.com","Instagram");
-  else if(c.includes("aws")) openExternal("https://aws.amazon.com","AWS");
-  else if(c.includes("bgmi")) openExternal("https://bgmi.in","BGMI");
+  if(c.includes("flipkart")) openApp("Flipkart","https://flipkart.com");
+  else if(c.includes("maps")) openApp("Maps","https://maps.google.com");
+  else if(c.includes("instagram")) openApp("Instagram","https://instagram.com");
+  else if(c.includes("aws")) openApp("AWS","https://aws.amazon.com");
   else if(c.includes("notes")) openNotes();
-  else speak("Command not recognized");
- };
+  else speak("Command not found");
+ }
 }
 </script>
 
