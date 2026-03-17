@@ -1,119 +1,178 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SKYRO OS</title>
 
 <style>
 body {
-  margin: 0;
-  background: black;
-  color: cyan;
-  font-family: Arial;
+  margin:0;
+  font-family:Arial;
+  background:black;
+  color:cyan;
+  overflow:hidden;
+}
+
+/* BACKGROUND */
+#bgCanvas {
+  position:fixed;
+  width:100%;
+  height:100%;
+  z-index:-1;
 }
 
 /* HEADER */
 .header {
-  text-align: center;
-  padding: 10px;
+  text-align:center;
+  padding:10px;
 }
 
 /* CARDS */
 .container {
-  display: grid;
-  grid-template-columns: repeat(2,1fr);
-  gap: 10px;
-  padding: 10px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  padding:12px;
 }
 
 .card {
-  height: 100px;
-  border: 2px solid cyan;
+  height:110px;
+  border:2px solid cyan;
   display:flex;
   justify-content:center;
   align-items:center;
   cursor:pointer;
-  border-radius:10px;
+  border-radius:12px;
+  background:rgba(0,0,0,0.6);
+  transition:0.3s;
 }
 
 .card:hover {
-  box-shadow:0 0 20px cyan;
+  transform:scale(1.07);
+  box-shadow:0 0 25px cyan,0 0 60px cyan;
 }
 
-/* WINDOW */
+/* WINDOWS */
 .window {
-  position: absolute;
-  width: 90%;
-  height: 70%;
-  top: 60px;
-  left: 5%;
-  background: black;
-  border: 2px solid cyan;
+  position:absolute;
+  width:90%;
+  height:70%;
+  top:60px;
+  left:5%;
+  background:rgba(0,0,0,0.95);
+  border:2px solid cyan;
   display:flex;
   flex-direction:column;
+  border-radius:10px;
 }
 
 .title-bar {
-  background: cyan;
+  background:cyan;
   color:black;
-  padding:5px;
+  padding:6px;
   display:flex;
   justify-content:space-between;
+  cursor:move;
 }
 
 /* TASKBAR */
 #taskbar {
-  position: fixed;
+  position:fixed;
   bottom:0;
   width:100%;
-  height:40px;
-  background:black;
-  border-top:1px solid cyan;
+  height:45px;
+  background:rgba(0,0,0,0.9);
   display:flex;
+  align-items:center;
+  border-top:1px solid cyan;
 }
+
 .task-item {
+  margin:5px;
   padding:5px 10px;
   background:cyan;
   color:black;
-  margin:5px;
   cursor:pointer;
+  border-radius:5px;
+}
+
+/* HIDE BUTTON */
+#toggleTaskbar {
+  position:fixed;
+  bottom:50px;
+  left:10px;
+  background:black;
+  border:1px solid cyan;
+  color:cyan;
+  padding:5px;
+  cursor:pointer;
+}
+
+/* MIC */
+#micBtn {
+  position:fixed;
+  right:20px;
+  bottom:70px;
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  background:black;
+  border:2px solid cyan;
+  color:cyan;
+  font-size:24px;
+  cursor:pointer;
+  box-shadow:0 0 20px cyan;
+}
+
+/* MOUSE GLOW */
+.glow {
+  position:fixed;
+  width:250px;
+  height:250px;
+  background:radial-gradient(circle, rgba(0,255,255,0.2), transparent);
+  pointer-events:none;
+  transform:translate(-50%,-50%);
 }
 </style>
 </head>
 
 <body>
 
+<canvas id="bgCanvas"></canvas>
+<div class="glow" id="glow"></div>
+
 <div class="header">
 <h2>SKYRO | BY SHASWAT</h2>
-<p>appnexus . your digital citadel</p>
+<p style="color:gray;">appnexus . your digital citadel</p>
 </div>
 
 <div class="container">
 
-<div class="card" onclick="openExternal('https://amazon.in','Amazon')">Amazon</div>
 <div class="card" onclick="openExternal('https://flipkart.com','Flipkart')">Flipkart</div>
-<div class="card" onclick="openExternal('https://swiggy.com','Swiggy')">Swiggy</div>
-<div class="card" onclick="openExternal('https://zomato.com','Zomato')">Zomato</div>
-<div class="card" onclick="openExternal('https://myntra.com','Myntra')">Myntra</div>
-
-<div class="card" onclick="openCalculator()">Calculator</div>
-<div class="card" onclick="openClock()">Clock</div>
-<div class="card" onclick="openNotes()">Notes</div>
+<div class="card" onclick="openExternal('https://maps.google.com','Google Maps')">Google Maps</div>
+<div class="card" onclick="openExternal('https://instagram.com','Instagram')">Instagram</div>
+<div class="card" onclick="openExternal('https://aws.amazon.com/console','AWS')">AWS Console</div>
+<div class="card" onclick="openExternal('https://bgmi.in','BGMI')">BGMI</div>
+<div class="card" onclick="openNotes()">Skyro Notes</div>
+<div class="card" onclick="openExternal('https://cricbuzz.com','Cricbuzz')">Cricbuzz</div>
 
 </div>
 
 <div id="windows"></div>
 <div id="taskbar"></div>
 
-<script>
+<button id="micBtn">🎤</button>
+<button id="toggleTaskbar">Toggle Taskbar</button>
 
-let appCount = 0;
+<script>
+let appCount=0;
 
 /* SOUND */
 function playClick(){
- const ctx = new AudioContext();
- const osc = ctx.createOscillator();
- const gain = ctx.createGain();
+ const ctx=new AudioContext();
+ const osc=ctx.createOscillator();
+ const gain=ctx.createGain();
  osc.connect(gain);
  gain.connect(ctx.destination);
  osc.frequency.value=500;
@@ -122,15 +181,20 @@ function playClick(){
  osc.stop(ctx.currentTime+0.05);
 }
 
-/* SPEAK */
-function speak(text){
- speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+/* VOICE */
+function speak(t){
+ speechSynthesis.speak(new SpeechSynthesisUtterance(t));
 }
 
-/* EXTERNAL APP */
+/* WELCOME */
+window.onload=()=>{
+ setTimeout(()=>speak("Welcome to Skyro by Shaswat"),1500);
+};
+
+/* EXTERNAL */
 function openExternal(url,name){
  playClick();
- speak("Opening " + name);
+ speak("Opening "+name);
  window.open(url,"_blank");
 }
 
@@ -147,7 +211,7 @@ function openNotes(){
 
  win.innerHTML=`
  <div class="title-bar">
-  <span>Notes</span>
+  <span>Skyro Notes</span>
   <span onclick="closeApp('${id}')">X</span>
  </div>
  <textarea style="flex:1;background:black;color:cyan;"></textarea>
@@ -155,76 +219,7 @@ function openNotes(){
 
  document.getElementById("windows").appendChild(win);
  addTask(id,"Notes");
-}
-
-/* CALCULATOR */
-let calc="";
-
-function openCalculator(){
- playClick();
- speak("Opening Calculator");
-
- const win=document.createElement("div");
- const id="app"+(++appCount);
-
- win.className="window";
- win.id=id;
-
- win.innerHTML=`
- <div class="title-bar">
-  <span>Calculator</span>
-  <span onclick="closeApp('${id}')">X</span>
- </div>
-
- <input id="display" style="width:100%;height:40px;background:black;color:cyan;text-align:right;" readonly>
-
- <div style="display:grid;grid-template-columns:repeat(4,1fr);">
- ${["7","8","9","/",
-    "4","5","6","*",
-    "1","2","3","-",
-    "0",".","=","+"]
-    .map(b=>`<button onclick="press('${b}')">${b}</button>`).join("")}
- </div>
- `;
-
- document.getElementById("windows").appendChild(win);
- addTask(id,"Calculator");
-}
-
-function press(v){
- if(v=="="){
-  try{calc=eval(calc)}catch{calc="Error"}
- } else calc+=v;
-
- document.getElementById("display").value=calc;
-}
-
-/* CLOCK */
-function openClock(){
- playClick();
- speak("Opening Clock");
-
- const win=document.createElement("div");
- const id="app"+(++appCount);
-
- win.className="window";
- win.id=id;
-
- win.innerHTML=`
- <div class="title-bar">
-  <span>Clock</span>
-  <span onclick="closeApp('${id}')">X</span>
- </div>
- <div id="clock" style="font-size:40px;text-align:center;margin-top:20px;"></div>
- `;
-
- document.getElementById("windows").appendChild(win);
- addTask(id,"Clock");
-
- setInterval(()=>{
-  const now=new Date().toLocaleTimeString();
-  document.getElementById("clock").innerText=now;
- },1000);
+ drag(win);
 }
 
 /* TASKBAR */
@@ -241,6 +236,81 @@ function closeApp(id){
  document.getElementById(id).remove();
 }
 
+/* DRAG */
+function drag(el){
+ let pos1=0,pos2=0,pos3=0,pos4=0;
+ el.querySelector(".title-bar").onmousedown=e=>{
+  pos3=e.clientX; pos4=e.clientY;
+  document.onmousemove=dragMove;
+  document.onmouseup=()=>document.onmousemove=null;
+ };
+ function dragMove(e){
+  pos1=pos3-e.clientX;
+  pos2=pos4-e.clientY;
+  pos3=e.clientX;
+  pos4=e.clientY;
+  el.style.top=(el.offsetTop-pos2)+"px";
+  el.style.left=(el.offsetLeft-pos1)+"px";
+ }
+}
+
+/* TASKBAR TOGGLE */
+document.getElementById("toggleTaskbar").onclick=()=>{
+ const tb=document.getElementById("taskbar");
+ tb.style.display = tb.style.display==="none" ? "flex" : "none";
+};
+
+/* BACKGROUND ANIMATION */
+const canvas=document.getElementById("bgCanvas");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let p=[];
+for(let i=0;i<60;i++){
+ p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,dx:Math.random()-0.5,dy:Math.random()-0.5});
+}
+
+function animate(){
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ p.forEach(pt=>{
+  ctx.beginPath();
+  ctx.arc(pt.x,pt.y,2,0,Math.PI*2);
+  ctx.fillStyle="cyan";
+  ctx.fill();
+  pt.x+=pt.dx; pt.y+=pt.dy;
+ });
+ requestAnimationFrame(animate);
+}
+animate();
+
+/* MOUSE GLOW */
+document.addEventListener("mousemove",e=>{
+ const g=document.getElementById("glow");
+ g.style.left=e.clientX+"px";
+ g.style.top=e.clientY+"px";
+});
+
+/* VOICE COMMAND */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(SR){
+ const rec=new SR();
+ document.getElementById("micBtn").onclick=()=>{
+  speak("Listening");
+  rec.start();
+ };
+ rec.onresult=e=>{
+  let c=e.results[0][0].transcript.toLowerCase();
+  if(c.includes("flipkart")) openExternal("https://flipkart.com","Flipkart");
+  else if(c.includes("maps")) openExternal("https://maps.google.com","Google Maps");
+  else if(c.includes("instagram")) openExternal("https://instagram.com","Instagram");
+  else if(c.includes("aws")) openExternal("https://aws.amazon.com/console","AWS");
+  else if(c.includes("bgmi")) openExternal("https://bgmi.in","BGMI");
+  else if(c.includes("notes")) openNotes();
+  else if(c.includes("cricket")) openExternal("https://cricbuzz.com","Cricbuzz");
+  else speak("Command not recognized");
+ };
+}
 </script>
 
 </body>
