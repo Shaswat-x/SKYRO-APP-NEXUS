@@ -1,229 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Skyro by Shaswat | AppNexus Citadel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --p: #00f2ff; --bg: #000105; --red: #ff003c; --aws: #FF9900; --glow: 0 0 50px rgba(0, 242, 255, 0.8); }
-        body.nitro { --p: #ff003c; --glow: 0 0 80px rgba(255, 0, 60, 1); }
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; -webkit-tap-highlight-color: transparent; }
-        body, html { background: #000; color: var(--p); font-family: 'Orbitron', sans-serif; height: 100vh; overflow: hidden; perspective: 3000px; touch-action: manipulation; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKYRO OS</title>
 
-        #loader { position: fixed; inset: 0; background: #000; z-index: 100000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        .load-ring { width: 100px; height: 100px; border: 3px solid rgba(0, 242, 255, 0.1); border-top: 3px solid var(--p); border-radius: 50%; animation: spin 0.6s linear infinite; box-shadow: var(--glow); }
+<style>
+body {
+  margin: 0;
+  background: black;
+  font-family: Arial;
+  color: cyan;
+  overflow: hidden;
+}
 
-        #handshake { position: fixed; inset: 0; z-index: 90000; background: #000; display: none; align-items: center; justify-content: center; flex-direction: column; }
-        .scanner { width: 220px; height: 220px; border: 5px double #0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: pulse 1.5s infinite; cursor: pointer; position: relative; }
-        .scan-line { position: absolute; width: 100%; height: 5px; background: #0f0; top: 0; animation: scan 2s infinite ease-in-out; box-shadow: 0 0 30px #0f0; }
+/* BOOT SCREEN */
+#boot-screen {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  z-index: 9999;
+  animation: fadeOut 2.5s ease forwards;
+  animation-delay: 2s;
+}
 
-        #ui-wrapper { position: fixed; inset: 0; z-index: 80000; display: none; opacity: 0; transition: 1s cubic-bezier(0.19, 1, 0.22, 1); }
-        .glass { background: rgba(0, 10, 25, 0.85); border: 1px solid rgba(0, 242, 255, 0.3); backdrop-filter: blur(50px); -webkit-backdrop-filter: blur(50px); border-radius: 20px; }
+@keyframes fadeOut {
+  to { opacity: 0; visibility: hidden; }
+}
 
-        #container { display: grid; grid-template-columns: 350px 1fr; grid-template-rows: 150px 1fr; height: 100vh; padding: 25px; gap: 25px; }
-        @media (max-width: 1000px) {
-            #container { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; padding: 15px; }
-            aside { grid-row: 3; height: 160px; }
-            .logo-text { font-size: 1.8rem !important; }
-            .grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
-        }
+/* HEADER */
+.header {
+  text-align: center;
+  padding: 10px;
+}
 
-        header { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
-        .branding { display: flex; flex-direction: column; }
-        .logo-text { font-size: 3rem; font-weight: 900; letter-spacing: 10px; text-shadow: var(--glow); text-transform: uppercase; }
-        .tagline { font-size: 0.9rem; letter-spacing: 5px; opacity: 0.8; margin-top: 5px; color: var(--p); }
+/* CARDS */
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  padding: 15px;
+}
 
-        aside { display: flex; flex-direction: column; overflow: hidden; }
-        #speedo-wrap { padding: 30px; text-align: center; border-bottom: 1px solid rgba(0,242,255,0.1); }
-        .gauge-val { font-size: 3.5rem; font-weight: 900; text-shadow: var(--glow); }
+.card {
+  height: 110px;
+  background: #111;
+  border: 2px solid cyan;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 0 0 10px cyan;
+  transition: 0.3s;
+}
 
-        main { position: relative; overflow-y: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; padding: 25px; transform-style: preserve-3d; }
-        .card { padding: 40px; text-align: center; transition: 0.5s; transform-style: preserve-3d; background: rgba(0, 242, 255, 0.04); border: 2px solid rgba(0, 242, 255, 0.15); border-radius: 10px 40px; cursor: pointer; }
-        .card:hover { border-color: var(--p); transform: translateZ(80px) rotateY(10deg); box-shadow: var(--glow); }
-        .card-label { font-size: 1.4rem; font-weight: 900; margin-top: 15px; letter-spacing: 2px; }
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px cyan;
+}
 
-        .back-btn { position: absolute; top: 30px; left: 30px; padding: 15px 45px; border: 3px solid var(--p); background: #000; color: var(--p); font-weight: 900; text-decoration: none; box-shadow: var(--glow); z-index: 1000; }
+/* WINDOWS */
+.window {
+  position: absolute;
+  width: 90%;
+  height: 70%;
+  top: 60px;
+  left: 5%;
+  background: rgba(0,0,0,0.95);
+  border: 2px solid cyan;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+}
 
-        .open-btn { 
-            display: inline-block; padding: 20px 60px; border: 4px solid var(--p); 
-            background: transparent; color: var(--p); font-weight: 900; font-size: 1.5rem; 
-            letter-spacing: 8px; border-radius: 0 50px; transition: 0.2s; box-shadow: var(--glow); 
-            text-decoration: none; position: relative; overflow: hidden;
-        }
-        .open-btn:active { background: var(--p); color: #000; transform: scale(0.9); box-shadow: 0 0 100px var(--p); }
+.title-bar {
+  background: cyan;
+  color: black;
+  padding: 6px;
+  display: flex;
+  justify-content: space-between;
+  cursor: move;
+}
 
-        .viewport-3d { width: 380px; height: 380px; transform-style: preserve-3d; position: relative; }
-        .reactor-core { width: 100%; height: 100%; border-radius: 50%; border: 12px solid var(--p); animation: hyperSpin 4s linear infinite; box-shadow: var(--glow), inset var(--glow); position: absolute; }
-        
-        #spark-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 100000; }
+iframe {
+  flex: 1;
+  border: none;
+}
 
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-        @keyframes hyperSpin { from { transform: rotateY(0) rotateX(70deg); } to { transform: rotateY(360deg) rotateX(70deg); } }
-        @keyframes pulse { 0%, 100% { box-shadow: 0 0 30px #0f0; } 50% { box-shadow: 0 0 80px #0f0; transform: scale(1.03); } }
-    </style>
+/* TASKBAR */
+#taskbar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 45px;
+  background: rgba(0,0,0,0.9);
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+
+.task-item {
+  margin-right: 10px;
+  padding: 5px 10px;
+  background: cyan;
+  color: black;
+  cursor: pointer;
+  border-radius: 5px;
+}
+</style>
 </head>
-<body onload="initSystem()">
 
-    <canvas id="spark-canvas"></canvas>
+<body>
 
-    <div id="loader">
-        <div class="load-ring"></div>
-        <div style="margin-top:30px; font-family:'Source Code Pro'; letter-spacing:8px; font-size:0.7rem;">CALIBRATING CITADEL CORE...</div>
+<!-- BOOT -->
+<div id="boot-screen">Initializing SKYRO...</div>
+
+<!-- HEADER -->
+<div class="header">
+  <h2>SKYRO | BY SHASWAT</h2>
+  <p style="color:gray;">appnexus . your digital citadel</p>
+</div>
+
+<!-- CARDS -->
+<div class="container">
+  <div class="card" onclick="openApp('https://google.com','Chrome')">Chrome</div>
+  <div class="card" onclick="openApp('https://chat.openai.com','ChatGPT')">ChatGPT</div>
+  <div class="card" onclick="openApp('https://cricbuzz.com','Cricbuzz')">Cricbuzz</div>
+  <div class="card" onclick="openApp('https://flipkart.com','Flipkart')">Flipkart</div>
+  <div class="card" onclick="openApp('https://youtube.com','YouTube')">YouTube</div>
+  <div class="card" onclick="openApp('https://github.com','GitHub')">GitHub</div>
+  <div class="card" onclick="openApp('https://aws.amazon.com/console','AWS Console')">AWS</div>
+  <div class="card" onclick="openNotes()">Notes</div>
+</div>
+
+<div id="windows"></div>
+<div id="taskbar"></div>
+
+<script>
+let zIndex = 1;
+let appCount = 0;
+
+/* BUILT-IN CLICK SOUND */
+function playClick() {
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioCtx.createOscillator();
+  const gainNode = audioCtx.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
+  oscillator.frequency.value = 600;
+  gainNode.gain.value = 0.1;
+
+  oscillator.start();
+  oscillator.stop(audioCtx.currentTime + 0.05);
+}
+
+/* VOICE */
+function speak(text) {
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "en-US";
+  window.speechSynthesis.speak(speech);
+}
+
+/* WELCOME (mobile safe) */
+window.onload = () => {
+  setTimeout(() => {
+    speak("Welcome to Skyro by Shaswat");
+  }, 2000);
+};
+
+/* OPEN APP */
+function openApp(url, title) {
+
+  playClick();
+  speak("Opening " + title);
+
+  const win = document.createElement("div");
+  const id = "app" + (++appCount);
+
+  win.className = "window";
+  win.id = id;
+  win.style.zIndex = zIndex++;
+
+  win.innerHTML = `
+    <div class="title-bar">
+      <span>${title}</span>
+      <div>
+        <span onclick="minimizeApp('${id}')">—</span>
+        <span onclick="closeApp('${id}')">X</span>
+      </div>
     </div>
+    <iframe src="${url}"></iframe>
+  `;
 
-    <div id="handshake" onclick="boot()">
-        <div class="scanner"><div class="scan-line"></div></div>
-        <div style="margin-top:40px; color:#0f0; font-size:1.2rem; letter-spacing:8px; font-weight:900; text-align:center;">ARCHITECT: SHASWAT MOHANTY</div>
+  document.getElementById("windows").appendChild(win);
+  addToTaskbar(id, title);
+  dragElement(win);
+}
+
+/* NOTES */
+function openNotes() {
+  playClick();
+  speak("Opening Notes");
+
+  const win = document.createElement("div");
+  const id = "app" + (++appCount);
+
+  win.className = "window";
+  win.id = id;
+
+  win.innerHTML = `
+    <div class="title-bar">
+      <span>Notes</span>
+      <div>
+        <span onclick="minimizeApp('${id}')">—</span>
+        <span onclick="closeApp('${id}')">X</span>
+      </div>
     </div>
+    <textarea style="flex:1;background:black;color:cyan;border:none;padding:10px;"></textarea>
+  `;
 
-    <canvas id="nebula" style="position:fixed; inset:0; z-index:0; background:#000;"></canvas>
+  document.getElementById("windows").appendChild(win);
+  addToTaskbar(id, "Notes");
+  dragElement(win);
+}
 
-    <div id="ui-wrapper">
-        <div id="container">
-            <header class="glass">
-                <div class="branding">
-                    <div class="logo-text">Skyro | <span style="font-weight:300; opacity:0.7;">by Shaswat</span></div>
-                    <div class="tagline">appnexus : your digital citadel</div>
-                </div>
-                <button style="border:2px solid var(--red); color:var(--red); padding:10px 20px; font-weight:900; background:transparent; cursor:pointer;" onclick="toggleNitro()">NITRO</button>
-            </header>
-            <aside class="glass">
-                <div id="speedo-wrap">
-                    <div class="gauge-val" id="speedo">000</div>
-                    <div style="letter-spacing:5px; opacity:0.6; font-size:0.7rem;">MACH VELOCITY</div>
-                </div>
-                <div id="terminal" style="flex-grow:1; overflow-y:auto; padding:20px; font-family:'Source Code Pro'; font-size:0.7rem; line-height:2;"></div>
-            </aside>
-            <main class="glass" id="viewport"></main>
-        </div>
-    </div>
+/* TASKBAR */
+function addToTaskbar(id, title) {
+  const item = document.createElement("div");
+  item.className = "task-item";
+  item.innerText = title;
 
-    <script>
-        const nodes = [
-            { id: 'mk3', name: 'MARK 3', icon: '▶', color: '#ff0000', link: 'https://youtube.com', label: 'YouTube' },
-            { id: 'mk4', name: 'MARK 4', icon: '🚀', color: '#00ff66', link: 'https://play.google.com', label: 'Play Store' },
-            { id: 'mk5', name: 'MARK 5', icon: '🏁', color: '#ffaa00', link: 'https://www.pubgmobile.com', label: 'PUBG' },
-            { id: 'mk50', name: 'MARK 50', icon: '📷', color: '#b300ff', link: 'https://instagram.com', label: 'Instagram' },
-            { id: 'mk85', name: 'MARK 85', icon: '💎', color: '#ffffff', link: 'https://flipkart.com', label: 'Flipkart' },
-            { id: 'mk7', name: 'MARK 7', icon: '☁️', color: '#FF9900', link: 'https://console.aws.amazon.com', label: 'AWS Console' },
-            { id: 'mk1', name: 'MARK 1', icon: '📡', color: '#00f2ff', link: 'https://maps.google.com', label: 'Google Maps' },
-            { id: 'apex', name: 'APEX', icon: '⚛', color: '#00f2ff', link: '#', label: 'Architect' }
-        ];
+  item.onclick = () => {
+    const app = document.getElementById(id);
+    app.style.display = "block";
+    app.style.zIndex = zIndex++;
+  };
 
-        let active = 'home', isNitro = false, speed = 0, targetSpeed = 0, audioCtx;
-        const sCanvas = document.getElementById('spark-canvas'), sCtx = sCanvas.getContext('2d');
-        let sparks = [];
+  document.getElementById("taskbar").appendChild(item);
+}
 
-        function playSound(f) {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-            o.type = 'square'; o.frequency.setValueAtTime(f, audioCtx.currentTime);
-            g.gain.setValueAtTime(0.04, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
-            o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1);
-        }
+/* MINIMIZE */
+function minimizeApp(id) {
+  document.getElementById(id).style.display = "none";
+}
 
-        function createSparks(e) {
-            const x = e.clientX || (e.touches ? e.touches[0].clientX : window.innerWidth/2);
-            const y = e.clientY || (e.touches ? e.touches[0].clientY : window.innerHeight/2);
-            const color = getComputedStyle(document.body).getPropertyValue('--p');
-            for(let i=0; i<60; i++) {
-                sparks.push({
-                    x, y, vx: (Math.random()-0.5)*30, vy: (Math.random()-0.5)*30,
-                    life: 1.0, color: color, size: Math.random()*4 + 1
-                });
-            }
-        }
+/* CLOSE */
+function closeApp(id) {
+  document.getElementById(id)?.remove();
+}
 
-        function updateSparks() {
-            sCtx.clearRect(0,0,sCanvas.width,sCanvas.height);
-            sparks.forEach((s, i) => {
-                s.x += s.vx; s.y += s.vy; s.life -= 0.025;
-                if(s.life <= 0) sparks.splice(i, 1);
-                sCtx.fillStyle = s.color; sCtx.globalAlpha = s.life;
-                sCtx.fillRect(s.x, s.y, s.size, s.size);
-            }); requestAnimationFrame(updateSparks);
-        }
+/* DRAG */
+function dragElement(elmnt) {
+  let pos1=0,pos2=0,pos3=0,pos4=0;
+  const header = elmnt.querySelector(".title-bar");
 
-        function speak(t) { 
-            window.speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(t); u.pitch = 0.8; u.rate = 1; 
-            window.speechSynthesis.speak(u); 
-        }
+  header.onmousedown = function(e) {
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmousemove = drag;
+    document.onmouseup = () => document.onmousemove = null;
+  };
 
-        function initSystem() {
-            const dpr = window.devicePixelRatio || 1;
-            sCanvas.width = window.innerWidth * dpr; sCanvas.height = window.innerHeight * dpr;
-            sCtx.scale(dpr, dpr);
-            initSpace(); updateSparks();
-            setTimeout(() => { 
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('handshake').style.display = 'flex';
-            }, 1200);
-        }
+  function drag(e) {
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
 
-        function boot() {
-            playSound(600); speak("Welcome to SKYRO by Shaswat.");
-            document.getElementById('handshake').style.display='none';
-            document.getElementById('ui-wrapper').style.display='block';
-            setTimeout(()=>document.getElementById('ui-wrapper').style.opacity='1', 100);
-            render();
-        }
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+  }
+}
+</script>
 
-        function toggleNitro() {
-            playSound(1000); isNitro = !isNitro; document.body.classList.toggle('nitro');
-            if(isNitro) speak("Nitro engaged.");
-        }
-
-        let canvas, ctx, parts = [];
-        function initSpace() {
-            canvas = document.getElementById('nebula'); ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            for(let i=0; i<300; i++) parts.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, z:Math.random()*canvas.width, l:Math.random()*60});
-            animate();
-            window.addEventListener('mousemove', (e) => {
-                targetSpeed = Math.abs(e.movementX + e.movementY) * 2;
-                if(active === 'home') {
-                    const g = document.querySelector('.grid');
-                    if(g) g.style.transform = `rotateY(${(window.innerWidth/2-e.clientX)/25}deg) rotateX(${-(window.innerHeight/2-e.clientY)/25}deg)`;
-                }
-            });
-        }
-
-        function animate() {
-            ctx.fillStyle = '#000'; ctx.fillRect(0,0,canvas.width,canvas.height);
-            speed += (targetSpeed - speed) * 0.1;
-            let m = isNitro ? (speed + 400) : speed;
-            document.getElementById('speedo').innerText = Math.floor(m).toString().padStart(3, '0');
-            targetSpeed *= 0.95;
-            parts.forEach(p => {
-                p.z -= (isNitro ? 60 : 15 + speed/5); if(p.z<=0) p.z=canvas.width;
-                const sx = (p.x - canvas.width/2) * (canvas.width/p.z) + canvas.width/2;
-                const sy = (p.y - canvas.height/2) * (canvas.width/p.z) + canvas.height/2;
-                const s = (1 - p.z/canvas.width);
-                ctx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--p');
-                ctx.lineWidth = s * 6; ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx + (s*p.l*(isNitro?20:4)), sy); ctx.stroke();
-            }); requestAnimationFrame(animate);
-        }
-
-        function log(msg) { const t = document.getElementById('terminal'), d = document.createElement('div'); d.innerHTML = `> ${msg}`; t.prepend(d); }
-
-        function navigate(id) { playSound(800); active = id; render(); }
-
-        function render() {
-            const v = document.getElementById('viewport');
-            log(`STARK_LINK: ${active.toUpperCase()}`);
-            if(active === 'home') {
-                v.innerHTML = `<div class="grid">${nodes.map(n => `<div class="card" onclick="navigate('${n.id}')"><span style="font-size:4.5rem;display:block;color:${n.color}">${n.icon}</span><div class="card-label" style="color:${n.color}">${n.label}</div></div>`).join('')}</div>`;
-            } else {
-                const n = nodes.find(x => x.id === active);
-                speak(`Opening ${n.label}.`);
-                let content = active === 'apex' ? `<div style="font-size:3rem;font-weight:900;text-align:center;line-height:1.5;">DESIGNED AND CREATED<br>BY<br>SHASWAT MOHANTY</div>` : `<div class="viewport-3d"><div class="reactor-core"></div></div><h1 style="font-size:4.5rem;text-shadow:0 0 50px ${n.color};">${n.name}</h1><a href="${n.link}" target="_blank" class="open-btn" style="border-color:${n.color};color:${n.color}" onmousedown="playSound(1100); createSparks(event)" ontouchstart="playSound(1100); createSparks(event)">OPEN ${n.label.toUpperCase()}</a>`;
-                v.innerHTML = `<a href="#" class="back-btn" onclick="navigate('home')">BACK</a><div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">${content}</div>`;
-            }
-        }
-    </script>
 </body>
 </html>
