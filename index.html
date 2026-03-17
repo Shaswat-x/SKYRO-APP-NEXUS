@@ -5,154 +5,242 @@
 <title>SKYRO OS</title>
 
 <style>
-body {
-  margin:0;
-  font-family:Arial;
-  background:black;
-  color:cyan;
-  overflow:hidden;
+body{
+ margin:0;
+ font-family: 'Segoe UI', sans-serif;
+ background:black;
+ color:cyan;
+ overflow:hidden;
+}
+
+/* BOOT SCREEN */
+#boot{
+ position:fixed;
+ width:100%;
+ height:100%;
+ background:black;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ flex-direction:column;
+ color:cyan;
+ z-index:99999;
+ animation:fadeOut 3s forwards;
+ animation-delay:2s;
+}
+@keyframes fadeOut{
+ to{opacity:0;visibility:hidden;}
 }
 
 /* LOGIN */
 #loginScreen{
-position:fixed;
-width:100%;
-height:100%;
-background:black;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-z-index:9999;
+ position:fixed;
+ width:100%;
+ height:100%;
+ background:black;
+ display:flex;
+ flex-direction:column;
+ justify-content:center;
+ align-items:center;
+ z-index:9999;
 }
 
-/* BG */
+/* BACKGROUND */
 #bgCanvas{
-position:fixed;
-width:100%;
-height:100%;
-z-index:-1;
+ position:fixed;
+ width:100%;
+ height:100%;
+ z-index:-1;
 }
 
 /* HEADER */
-.header{text-align:center;padding:10px;}
+.header{
+ text-align:center;
+ margin-top:10px;
+}
 
 /* CARDS */
 .container{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
-padding:10px;
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:15px;
+ padding:15px;
 }
+
 .card{
-height:110px;
-border:2px solid cyan;
-display:flex;
-justify-content:center;
-align-items:center;
-cursor:pointer;
-border-radius:10px;
+ height:120px;
+ border-radius:16px;
+ backdrop-filter: blur(15px);
+ background: rgba(0,255,255,0.05);
+ border:1px solid rgba(0,255,255,0.3);
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ cursor:pointer;
+ position:relative;
+ overflow:hidden;
+ transition:0.3s;
 }
+
+.card::before{
+ content:"";
+ position:absolute;
+ width:200%;
+ height:200%;
+ background:linear-gradient(45deg,transparent,cyan,transparent);
+ animation:rotate 4s linear infinite;
+}
+@keyframes rotate{
+ 0%{transform:rotate(0deg);}
+ 100%{transform:rotate(360deg);}
+}
+
+.card::after{
+ content:"";
+ position:absolute;
+ inset:2px;
+ background:black;
+ border-radius:14px;
+}
+
+.card span{
+ position:relative;
+ z-index:2;
+}
+
 .card:hover{
-box-shadow:0 0 30px cyan;
-transform:scale(1.05);
+ transform:scale(1.08);
+ box-shadow:0 0 40px cyan;
 }
 
-/* WINDOW */
+/* WINDOWS */
 .window{
-position:absolute;
-width:90%;
-height:70%;
-top:60px;
-left:5%;
-background:black;
-border:2px solid cyan;
-display:flex;
-flex-direction:column;
+ position:absolute;
+ width:90%;
+ height:70%;
+ top:60px;
+ left:5%;
+ backdrop-filter: blur(20px);
+ background:rgba(0,0,0,0.6);
+ border:1px solid rgba(0,255,255,0.4);
+ border-radius:14px;
+ display:flex;
+ flex-direction:column;
+ box-shadow:0 0 40px rgba(0,255,255,0.3);
 }
+
 .title-bar{
-background:cyan;
-color:black;
-padding:5px;
-display:flex;
-justify-content:space-between;
-cursor:move;
+ background:rgba(0,255,255,0.8);
+ color:black;
+ padding:6px;
+ display:flex;
+ justify-content:space-between;
+ cursor:move;
 }
 
-/* TASKBAR */
-#taskbar{
-position:fixed;
-bottom:0;
-width:100%;
-height:40px;
-background:black;
-display:flex;
-border-top:1px solid cyan;
-}
-.task-item{
-margin:5px;
-padding:5px 10px;
-background:cyan;
-color:black;
-cursor:pointer;
+/* DOCK */
+#dock{
+ position:fixed;
+ bottom:10px;
+ left:50%;
+ transform:translateX(-50%);
+ display:flex;
+ gap:10px;
+ background:rgba(0,0,0,0.5);
+ padding:10px;
+ border-radius:20px;
+ backdrop-filter:blur(10px);
 }
 
-/* BUTTONS */
-#micBtn,#toggleTaskbar,#lockBtn{
-position:fixed;
-background:black;
-color:cyan;
-border:1px solid cyan;
-cursor:pointer;
+.dock-item{
+ width:50px;
+ height:50px;
+ background:cyan;
+ border-radius:10px;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ cursor:pointer;
+ transition:0.3s;
 }
-#micBtn{right:20px;bottom:70px;width:60px;height:60px;border-radius:50%;}
-#toggleTaskbar{bottom:50px;left:10px;}
-#lockBtn{top:10px;right:10px;}
+
+.dock-item:hover{
+ transform:scale(1.3);
+ box-shadow:0 0 20px cyan;
+}
+
+/* MIC */
+#micBtn{
+ position:fixed;
+ right:20px;
+ bottom:90px;
+ width:60px;
+ height:60px;
+ border-radius:50%;
+ background:black;
+ border:2px solid cyan;
+ color:cyan;
+ cursor:pointer;
+ animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+ 0%{box-shadow:0 0 10px cyan;}
+ 50%{box-shadow:0 0 40px cyan;}
+ 100%{box-shadow:0 0 10px cyan;}
+}
 
 /* GLOW */
 #glow{
-position:fixed;
-width:250px;height:250px;
-background:radial-gradient(circle, rgba(0,255,255,0.2), transparent);
-pointer-events:none;
+ position:fixed;
+ width:250px;
+ height:250px;
+ background:radial-gradient(circle, rgba(0,255,255,0.2), transparent);
+ pointer-events:none;
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="loginScreen">
+<div id="boot">
 <h1>SKYRO OS</h1>
+<p>Initializing System...</p>
+</div>
+
+<div id="loginScreen">
+<h2>Login</h2>
 <input id="username" placeholder="Enter Username">
-<br><br>
-<button onclick="login()">Login</button>
+<button onclick="login()">Enter</button>
 </div>
 
 <canvas id="bgCanvas"></canvas>
 <div id="glow"></div>
 
-<button id="micBtn">🎤</button>
-<button id="toggleTaskbar">Taskbar</button>
-<button id="lockBtn" onclick="lockSystem()">🔒</button>
-
 <div class="header">
-<h2>SKYRO | BY SHASWAT</h2>
-<p>appnexus . your digital citadel</p>
+<h2>SKYRO</h2>
+<p>Appnexus Interface</p>
 </div>
 
 <div class="container">
-<div class="card" onclick="openExternal('https://flipkart.com','Flipkart')">Flipkart</div>
-<div class="card" onclick="openExternal('https://maps.google.com','Google Maps')">Maps</div>
-<div class="card" onclick="openExternal('https://instagram.com','Instagram')">Instagram</div>
-<div class="card" onclick="openExternal('https://aws.amazon.com/console','AWS')">AWS</div>
-<div class="card" onclick="openExternal('https://bgmi.in','BGMI')">BGMI</div>
-<div class="card" onclick="openNotes()">Skyro Notes</div>
-<div class="card" onclick="openExternal('https://cricbuzz.com','Cricbuzz')">Cricbuzz</div>
+<div class="card" onclick="openExternal('https://flipkart.com','Flipkart')"><span>Flipkart</span></div>
+<div class="card" onclick="openExternal('https://maps.google.com','Maps')"><span>Maps</span></div>
+<div class="card" onclick="openExternal('https://instagram.com','Instagram')"><span>Instagram</span></div>
+<div class="card" onclick="openExternal('https://aws.amazon.com','AWS')"><span>AWS</span></div>
+<div class="card" onclick="openExternal('https://bgmi.in','BGMI')"><span>BGMI</span></div>
+<div class="card" onclick="openNotes()"><span>Notes</span></div>
+<div class="card" onclick="openExternal('https://cricbuzz.com','Cricbuzz')"><span>Cricbuzz</span></div>
 </div>
 
+<div id="dock">
+<div class="dock-item" onclick="openNotes()">📝</div>
+<div class="dock-item" onclick="lockSystem()">🔒</div>
+<div class="dock-item" onclick="location.reload()">🔄</div>
+</div>
+
+<button id="micBtn">🎤</button>
+
 <div id="windows"></div>
-<div id="taskbar"></div>
 
 <script>
 let appCount=0;
@@ -177,27 +265,17 @@ function speak(t){
 
 /* LOGIN */
 function login(){
- let user=document.getElementById("username").value;
- if(!user) return alert("Enter username");
- localStorage.setItem("skyro_user",user);
+ let u=document.getElementById("username").value;
+ if(!u) return alert("Enter username");
+ localStorage.setItem("user",u);
  document.getElementById("loginScreen").style.display="none";
- speak("Welcome "+user);
+ speak("Welcome "+u);
 }
 
 /* LOCK */
 function lockSystem(){
  document.getElementById("loginScreen").style.display="flex";
- speak("System locked");
 }
-
-/* AUTO LOGIN */
-window.onload=()=>{
- let user=localStorage.getItem("skyro_user");
- if(user){
-  document.getElementById("loginScreen").style.display="none";
-  speak("Welcome back "+user);
- }
-};
 
 /* EXTERNAL */
 function openExternal(url,name){
@@ -219,40 +297,25 @@ function openNotes(){
 
  win.innerHTML=`
  <div class="title-bar">
-  <span>Skyro Notes</span>
+  <span>Notes</span>
   <span onclick="closeApp('${id}')">X</span>
  </div>
  <textarea id="notesArea" style="flex:1;background:black;color:cyan;"></textarea>
  <button onclick="saveNotes()">Save</button>
  `;
 
- document.getElementById("windows").appendChild(win);
- addTask(id,"Notes");
+ document.body.appendChild(win);
  drag(win);
  setTimeout(loadNotes,100);
 }
 
 function saveNotes(){
- localStorage.setItem("skyro_notes",document.getElementById("notesArea").value);
+ localStorage.setItem("notes",document.getElementById("notesArea").value);
  speak("Saved");
 }
 function loadNotes(){
- let d=localStorage.getItem("skyro_notes");
+ let d=localStorage.getItem("notes");
  if(d) document.getElementById("notesArea").value=d;
-}
-
-/* TASKBAR */
-function addTask(id,name){
- let t=document.createElement("div");
- t.className="task-item";
- t.innerText=name;
- t.onclick=()=>document.getElementById(id).style.display="block";
- document.getElementById("taskbar").appendChild(t);
-}
-
-/* CLOSE */
-function closeApp(id){
- document.getElementById(id).remove();
 }
 
 /* DRAG */
@@ -273,41 +336,42 @@ function drag(el){
  }
 }
 
-/* TASKBAR TOGGLE */
-document.getElementById("toggleTaskbar").onclick=()=>{
- let tb=document.getElementById("taskbar");
- tb.style.display = tb.style.display==="none"?"flex":"none";
-};
+/* BACKGROUND */
+let canvas=document.getElementById("bgCanvas");
+let ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
 
-/* BG ANIMATION */
-let c=document.getElementById("bgCanvas");
-let ctx=c.getContext("2d");
-c.width=innerWidth;c.height=innerHeight;
-let p=[];
-for(let i=0;i<50;i++){
- p.push({x:Math.random()*c.width,y:Math.random()*c.height,dx:Math.random()-0.5,dy:Math.random()-0.5});
+let stars=[];
+for(let i=0;i<120;i++){
+ stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,size:Math.random()*2,speed:Math.random()*0.5});
 }
-function anim(){
- ctx.clearRect(0,0,c.width,c.height);
- p.forEach(pt=>{
+
+function animate(){
+ ctx.fillStyle="rgba(0,0,0,0.2)";
+ ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ stars.forEach(s=>{
   ctx.beginPath();
-  ctx.arc(pt.x,pt.y,2,0,Math.PI*2);
+  ctx.arc(s.x,s.y,s.size,0,Math.PI*2);
   ctx.fillStyle="cyan";
   ctx.fill();
-  pt.x+=pt.dx;pt.y+=pt.dy;
+  s.y+=s.speed;
+  if(s.y>canvas.height){s.y=0;s.x=Math.random()*canvas.width;}
  });
- requestAnimationFrame(anim);
-}
-anim();
 
-/* MOUSE GLOW */
+ requestAnimationFrame(animate);
+}
+animate();
+
+/* GLOW */
 document.addEventListener("mousemove",e=>{
  let g=document.getElementById("glow");
  g.style.left=e.clientX+"px";
  g.style.top=e.clientY+"px";
 });
 
-/* VOICE COMMAND */
+/* VOICE */
 let SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(SR){
  let rec=new SR();
@@ -323,7 +387,6 @@ if(SR){
   else if(c.includes("aws")) openExternal("https://aws.amazon.com","AWS");
   else if(c.includes("bgmi")) openExternal("https://bgmi.in","BGMI");
   else if(c.includes("notes")) openNotes();
-  else if(c.includes("cricket")) openExternal("https://cricbuzz.com","Cricbuzz");
   else speak("Command not recognized");
  };
 }
